@@ -42,57 +42,55 @@ os.makedirs(config.UPLOAD_FOLDER, exist_ok=True)
 # DISEASE INFO DATABASE
 # ========================
 DISEASE_TREATMENTS = {
-    # (Same dictionary as before - shortened for brevity in this rewrite, 
-    # ensuring all keys match PlantVillage classes)
-    "Bacterial_spot": {
+    "bacterial spot": {
         "severity": "Moderate",
-        "treatment": "Apply copper-based bactericides. Remove infected leaves.",
-        "prevention": "Use disease-free seeds, practice crop rotation."
+        "treatment": "Use copper-based bactericides such as Kocide. Remove and destroy infected leaves immediately to prevent spreading.",
+        "prevention": "Rotate crops every 2-3 years. Avoid overhead watering to keep foliage dry. Use disease-free seeds."
     },
-    "Early_blight": {
+    "early blight": {
         "severity": "Moderate", 
-        "treatment": "Apply fungicides containing chlorothalonil. Remove debris.",
-        "prevention": "Mulch around plants, water at base."
+        "treatment": "Apply fungicides containing chlorothalonil or mancozeb. Prune lower leaves to improve air circulation.",
+        "prevention": "Maintain consistent moisture and provide adequate spacing between plants. Mulch to prevent soil splash."
     },
-    "Late_blight": {
+    "late blight": {
         "severity": "Severe",
-        "treatment": "Apply fungicides immediately. Destroy infected plants.",
-        "prevention": "Plant resistant varieties, ensure drainage."
+        "treatment": "Apply targeted fungicides like Ridomil Gold. If infection is severe, destroy the entire plant to save others.",
+        "prevention": "Avoid planting during very damp/cool seasons. Ensure excellent soil drainage and use resistant varieties."
     },
-    "Leaf_Mold": {
+    "leaf mold": {
         "severity": "Moderate",
-        "treatment": "Improve air circulation. Apply fungicides if severe.",
-        "prevention": "Space plants properly, ensure ventilation."
+        "treatment": "Reduce humidity in greenhouses. Apply fungicides like Daconil if the infection is spreading rapidly.",
+        "prevention": "Provide adequate spacing for ventilation. Prune plants to increase air flow through the canopy."
     },
-    "Septoria_leaf_spot": {
+    "septoria leaf spot": {
         "severity": "Moderate",
-        "treatment": "Remove infected leaves, apply organic fungicides.",
-        "prevention": "Rotate crops, avoid overhead watering."
+        "treatment": "Remove infected leaves. Apply organic fungicides or those containing copper or sulfur.",
+        "prevention": "Avoid working with plants when they are wet. Practice strict crop rotation and weed control."
     },
-    "Spider_mites": {
+    "spider mites": {
         "severity": "Moderate",
-        "treatment": "Spray with insecticidal soap or neem oil.",
-        "prevention": "Avoid water stress, encourage predators."
+        "treatment": "Apply Neem oil or insecticidal soap. Blast the undersides of leaves with a strong stream of water.",
+        "prevention": "Keep plants well-hydrated, as spider mites thrive in hot, dry conditions. Encourage natural predators like ladybugs."
     },
-    "Target_Spot": {
+    "target spot": {
         "severity": "Moderate",
-        "treatment": "Apply fungicides, remove infected leaves.",
-        "prevention": "Practice crop rotation, mulch soil."
+        "treatment": "Apply fungicides such as chlorothalonil. Remove lower diseased leaves to reduce fungal spore load.",
+        "prevention": "Ensure good soil health and drainage. Avoid wetting the leaves during irrigation."
     },
-    "mosaic_virus": {
+    "mosaic virus": {
         "severity": "Severe",
-        "treatment": "No cure. Remove infected plants immediately.",
-        "prevention": "Control aphids, use virus-free seeds."
+        "treatment": "No chemical cure exists. Immediately remove and burn infected plants to prevent the virus from spreading.",
+        "prevention": "Control aphids and whiteflies which spread the virus. Use virus-resistant seeds and disinfect tools."
     },
-    "YellowLeaf_Curl_Virus": {
+    "yellowleaf curl virus": {
         "severity": "Severe",
-        "treatment": "Remove infected plants. Control whiteflies.",
-        "prevention": "Use resistant varieties, install insect screens."
+        "treatment": "No cure. Remove infected plants. Focus heavily on controlling the whitefly population that transmits the virus.",
+        "prevention": "Use silver plastic mulches to repel whiteflies. Plant resistant varieties and use protective covers."
     },
     "healthy": {
         "severity": "None",
-        "treatment": "No treatment needed.",
-        "prevention": "Maintain good cultural practices."
+        "treatment": "Continue your current care routine! Your plant looks strong and vibrant.",
+        "prevention": "Maintain regular watering and fertilization. Keep an eye out for early signs of pests."
     }
 }
 
@@ -159,13 +157,15 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in config.ALLOWED_EXTENSIONS
 
 def get_treatment_info(disease_name):
+    clean_query = disease_name.lower().replace('_', ' ')
     for key, val in DISEASE_TREATMENTS.items():
-        if key.lower() in disease_name.lower():
+        if key in clean_query:
             return val
+    
     return {
-        "severity": "Unknown",
-        "treatment": "Consult an expert.",
-        "prevention": "Practice good hygiene."
+        "severity": "N/A",
+        "treatment": "Diagnosis unclear. Please consult with a local agricultural specialist or try a clearer photo.",
+        "prevention": "Maintain general plant hygiene and monitor the area for spreading symptoms."
     }
 
 def parse_disease_name(class_name):
@@ -198,7 +198,8 @@ def health_check():
     return jsonify({
         "status": "healthy",
         "model_loaded": model is not None,
-        "framework": "PyTorch"
+        "framework": "PyTorch",
+        "num_classes": len(class_labels) if class_labels else 0
     })
 
 @app.route('/api/predict', methods=['POST'])

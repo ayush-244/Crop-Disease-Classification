@@ -264,6 +264,11 @@ function displayResults(data) {
 function displayTop3Predictions(predictions) {
     elements.predictionsList.innerHTML = '';
 
+    if (!predictions || !Array.isArray(predictions)) {
+        elements.predictionsList.innerHTML = '<p>No alternative predictions available.</p>';
+        return;
+    }
+
     predictions.forEach((pred, index) => {
         const item = document.createElement('div');
         item.className = 'prediction-item';
@@ -276,7 +281,6 @@ function displayTop3Predictions(predictions) {
             </div>
             <div class="prediction-confidence">${pred.confidence}%</div>
         `;
-
         elements.predictionsList.appendChild(item);
     });
 }

@@ -1,24 +1,24 @@
-# Python & OS
+# Python
 __pycache__/
 *.py[cod]
-.DS_Store
-Thumbs.db
-.env
+*$py.class
 venv/
-env/
+.env
 
-# Datasets (Too large for GitHub)
+# Models
+models/
+!models/crop_disease_model.pth
+!models/class_labels.json
+
+# Data
 PlantVillage/
-data/
 dataset/
+uploads/
 
-# Uploads (User generated content)
-backend/uploads/*
-!backend/uploads/.gitkeep
-
-# IDE Settings
+# IDEs
 .vscode/
 .idea/
 
-# Ignore old model formats, but KEEP .pth (PyTorch)
-models/*.h5
+# OS
+.DS_Store
+Thumbs.db
