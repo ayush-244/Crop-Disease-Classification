@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="AI-powered crop disease classification system using deep learning to identify plant diseases from leaf images">
+    <meta name="keywords" content="crop disease, plant disease, AI, machine learning, agriculture">
+    <meta name="author" content="Crop Disease Classifier">
+
+    <title>Crop Disease Classifier - AI-Powered Plant Health Detection</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Background Animation -->
+    <div class="background-animation">
+        <div class="leaf-particle"></div>
+        <div class="leaf-particle"></div>
+        <div class="leaf-particle"></div>
+        <div class="leaf-particle"></div>
+        <div class="leaf-particle"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-leaf"></i>
+                    <span>CropCare AI</span>
+                </div>
+                <nav class="nav">
+                    <a href="#home" class="nav-link active">Home</a>
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#features" class="nav-link">Features</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-sparkles"></i>
+                    <span>AI-Powered Disease Detection</span>
+                </div>
+                <h1 class="hero-title">
+                    Protect Your Crops with
+                    <span class="gradient-text">Intelligent Diagnosis</span>
+                </h1>
+                <p class="hero-description">
+                    Upload a leaf image and get instant AI-powered disease detection with treatment recommendations.
+                    Powered by deep learning and trained on thousands of plant images.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">15+</div>
+                        <div class="stat-label">Disease Classes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">95%+</div>
+                        <div class="stat-label">Accuracy</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">&lt;2s</div>
+                        <div class="stat-label">Response Time</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Upload Section -->
+    <section class="upload-section">
+        <div class="container">
+            <div class="upload-card">
+                <div class="upload-header">
+                    <h2>Upload Leaf Image</h2>
+                    <p>Drag and drop or click to select an image</p>
+                </div>
+
+                <!-- Upload Area -->
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="fileInput" accept="image/*" hidden>
+                    <div class="upload-placeholder" id="uploadPlaceholder">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h3>Drop your image here</h3>
+                        <p>or click to browse</p>
+                        <div class="supported-formats">
+                            <span>Supported formats: JPG, PNG, JPEG</span>
+                        </div>
+                    </div>
+
+                    <!-- Image Preview -->
+                    <div class="image-preview" id="imagePreview" style="display: none;">
+                        <img id="previewImg" src="" alt="Preview">
+                        <button class="remove-image" id="removeImage">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="predictBtn" disabled>
+                        <i class="fas fa-brain"></i>
+                        <span>Analyze Image</span>
+                    </button>
+                    <button class="btn btn-secondary" id="resetBtn">
+                        <i class="fas fa-redo"></i>
+                        <span>Reset</span>
+                    </button>
+                </div>
+
+                <!-- Loading State -->
+                <div class="loading-state" id="loadingState" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <p>Analyzing your image...</p>
+                    <span class="loading-subtext">Our AI is examining the leaf for diseases</span>
+                </div>
+
+                <!-- Results Section -->
+                <div class="results-section" id="resultsSection" style="display: none;">
+                    <!-- Primary Result -->
+                    <div class="primary-result">
+                        <div class="result-header">
+                            <h3>Diagnosis Result</h3>
+                            <div class="health-badge" id="healthBadge">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Healthy</span>
+                            </div>
+                        </div>
+
+                        <div class="result-details">
+                            <div class="detail-item">
+                                <div class="detail-icon">
+                                    <i class="fas fa-seedling"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <span class="detail-label">Crop Type</span>
+                                    <span class="detail-value" id="cropName">-</span>
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-icon">
+                                    <i class="fas fa-virus"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <span class="detail-label">Disease Detected</span>
+                                    <span class="detail-value" id="diseaseName">-</span>
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <span class="detail-label">Confidence</span>
+                                    <div class="confidence-bar">
+                                        <div class="confidence-fill" id="confidenceFill"></div>
+                                        <span class="confidence-text" id="confidenceText">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-icon">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <span class="detail-label">Severity</span>
+                                    <span class="detail-value severity-badge" id="severityBadge">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Treatment Information -->
+                    <div class="treatment-section" id="treatmentSection">
+                        <div class="treatment-card">
+                            <div class="treatment-header">
+                                <i class="fas fa-prescription-bottle-alt"></i>
+                                <h4>Recommended Treatment</h4>
+                            </div>
+                            <p id="treatmentText">-</p>
+                        </div>
+
+                        <div class="treatment-card">
+                            <div class="treatment-header">
+                                <i class="fas fa-shield-alt"></i>
+                                <h4>Prevention Tips</h4>
+                            </div>
+                            <p id="preventionText">-</p>
+                        </div>
+                    </div>
+
+                    <!-- Top 3 Predictions -->
+                    <div class="top-predictions">
+                        <h4>Alternative Predictions</h4>
+                        <div class="predictions-list" id="predictionsList">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Choose CropCare AI?</h2>
+                <p>Advanced technology meets agricultural expertise</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Deep Learning</h3>
+                    <p>Powered by MobileNetV2 transfer learning for accurate disease detection</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Instant Results</h3>
+                    <p>Get disease diagnosis in under 2 seconds with high confidence scores</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-prescription"></i>
+                    </div>
+                    <h3>Treatment Advice</h3>
+                    <p>Receive actionable treatment and prevention recommendations</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Mobile Friendly</h3>
+                    <p>Works seamlessly on all devices - desktop, tablet, and mobile</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Extensive Database</h3>
+                    <p>Trained on 40,000+ images covering 15+ disease classes</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3>High Accuracy</h3>
+                    <p>95%+ accuracy rate validated on real-world crop images</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>About This Project</h2>
+                    <p>
+                        CropCare AI is an advanced machine learning system designed to help farmers and agricultural
+                        professionals quickly identify crop diseases from leaf images. Using state-of-the-art deep
+                        learning technology, our system can detect and classify various plant diseases with high
+                        accuracy.
+                    </p>
+                    <p>
+                        The system is trained on the PlantVillage dataset, containing thousands of images of healthy
+                        and diseased crop leaves. It supports multiple crops including tomatoes, potatoes, and peppers,
+                        detecting diseases like bacterial spot, early blight, late blight, and more.
+                    </p>
+                    <div class="tech-stack">
+                        <h4>Technology Stack</h4>
+                        <div class="tech-badges">
+                            <span class="tech-badge">PyTorch</span>
+                            <span class="tech-badge">Torchvision</span>
+                            <span class="tech-badge">MobileNetV2</span>
+                            <span class="tech-badge">Flask</span>
+                            <span class="tech-badge">Python</span>
+                            <span class="tech-badge">JavaScript</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="logo">
+                        <i class="fas fa-leaf"></i>
+                        <span>CropCare AI</span>
+                    </div>
+                    <p>AI-powered crop disease detection for sustainable agriculture</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="#home">Home</a>
+                    <a href="#about">About</a>
+                    <a href="#features">Features</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-user"></i> Ayush Kumar</p>
+                    <p><i class="fas fa-envelope"></i> ayushku244@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> +91 9162573098</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 CropCare AI. Developed by Ayush Kumar with <i class="fas fa-heart"></i> for sustainable
+                    agriculture</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Success!</span>
+    </div>
+
+    <!-- Script -->
+    <script src="script.js"></script>
+</body>
+
+</html>

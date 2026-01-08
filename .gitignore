@@ -1,0 +1,24 @@
+# Python & OS
+__pycache__/
+*.py[cod]
+.DS_Store
+Thumbs.db
+.env
+venv/
+env/
+
+# Datasets (Too large for GitHub)
+PlantVillage/
+data/
+dataset/
+
+# Uploads (User generated content)
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# IDE Settings
+.vscode/
+.idea/
+
+# Ignore old model formats, but KEEP .pth (PyTorch)
+models/*.h5
