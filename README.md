@@ -390,8 +390,6 @@ If you found this project helpful, please give it a star! It helps others discov
 
 ---
 
-**Built with ❤️ for sustainable agriculture and AI-powered farming**
-
 **Developed by:** Ayush Kumar  
 **Email:** ayushku244@gmail.com  
 **Contact:** +91 9162573098
