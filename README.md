@@ -393,3 +393,5 @@ If you found this project helpful, please give it a star! It helps others discov
 **Developed by:** Ayush Kumar  
 **Email:** ayushku244@gmail.com  
 **Contact:** +91 9162573098
+#   R e b u i l d   t r i g g e r  
+ 
