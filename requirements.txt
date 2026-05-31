@@ -22,5 +22,8 @@ seaborn>=0.13.0
 Flask>=3.0.0
 Flask-CORS>=4.0.0
 
+# Production Server
+gunicorn>=21.0.0
+
 # Utilities
 werkzeug>=3.0.0

@@ -3,7 +3,7 @@ import os
 import json
 import numpy as np
 import io
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from PIL import Image
@@ -24,6 +24,7 @@ class Config:
     MODEL_PATH = os.path.join(PROJECT_ROOT, "models", "crop_disease_model.pth")
     LABELS_PATH = os.path.join(PROJECT_ROOT, "models", "class_labels.json")
     UPLOAD_FOLDER = os.path.join(BACKEND_DIR, "uploads")
+    FRONTEND_FOLDER = os.path.join(PROJECT_ROOT, "frontend")
     
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
     IMG_SIZE = 224
@@ -34,7 +35,7 @@ config = Config()
 # ========================
 # FLASK APP SETUP
 # ========================
-app = Flask(__name__)
+app = Flask(__name__, static_folder=config.FRONTEND_FOLDER, static_url_path='')
 CORS(app)
 os.makedirs(config.UPLOAD_FOLDER, exist_ok=True)
 
@@ -193,6 +194,16 @@ def parse_disease_name(class_name):
 # API ENDPOINTS
 # ========================
 
+@app.route('/', methods=['GET'])
+def serve_index():
+    """Serve the frontend index.html"""
+    return send_from_directory(config.FRONTEND_FOLDER, 'index.html')
+
+@app.route('/<path:path>', methods=['GET'])
+def serve_static(path):
+    """Serve static files (CSS, JS, images)"""
+    return send_from_directory(config.FRONTEND_FOLDER, path)
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
     return jsonify({
@@ -258,4 +269,5 @@ def predict():
         return jsonify({"success": False, "error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
