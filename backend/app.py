@@ -195,6 +195,28 @@ def parse_disease_name(class_name):
     return crop, disease, is_healthy
 
 # ========================
+# ERROR HANDLERS
+# ========================
+
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({"success": False, "error": "Endpoint not found"}), 404
+
+@app.errorhandler(500)
+def server_error(error):
+    print(f"[ERROR] Server error: {error}")
+    return jsonify({"success": False, "error": "Internal server error"}), 500
+
+@app.errorhandler(Exception)
+def handle_exception(error):
+    print(f"[ERROR] Unhandled exception: {error}")
+    return jsonify({"success": False, "error": str(error)}), 500
+
+@app.before_request
+def before_request():
+    print(f"[{request.method}] {request.path}")
+
+# ========================
 # API ENDPOINTS
 # ========================
 
@@ -207,26 +229,44 @@ def health_check():
         "num_classes": len(class_labels) if class_labels else 0
     })
 
-@app.route('/api/predict', methods=['POST'])
+@app.route('/api/predict', methods=['POST', 'OPTIONS'])
 def predict():
+    # Handle CORS preflight
+    if request.method == 'OPTIONS':
+        return '', 204
+    
+    print(f"[PREDICT] Received prediction request")
+    print(f"[PREDICT] Model loaded: {model is not None}")
+    print(f"[PREDICT] Files in request: {list(request.files.keys())}")
+    
     if model is None:
+        print("[ERROR] Model not loaded!")
         return jsonify({"success": False, "error": "Model not loaded"}), 500
     
     if 'file' not in request.files:
-        return jsonify({"success": False, "error": "No file"}), 400
+        print("[ERROR] No file in request!")
+        return jsonify({"success": False, "error": "No file provided"}), 400
         
     file = request.files['file']
+    print(f"[PREDICT] File received: {file.filename}")
+    
     if file.filename == '' or not allowed_file(file.filename):
-        return jsonify({"success": False, "error": "Invalid file"}), 400
+        print(f"[ERROR] Invalid file: {file.filename}")
+        return jsonify({"success": False, "error": "Invalid file format. Use PNG or JPG."}), 400
 
     try:
+        print("[PREDICT] Processing image...")
         # Process image directly from memory
         img = Image.open(file.stream).convert('RGB')
+        print(f"[PREDICT] Image loaded: {img.size}")
+        
         img_tensor = prediction_transform(img).unsqueeze(0).to(config.DEVICE)
+        print(f"[PREDICT] Image tensor shape: {img_tensor.shape}")
         
         with torch.no_grad():
             outputs = model(img_tensor)
             probs = torch.nn.functional.softmax(outputs, dim=1)
+            print(f"[PREDICT] Model output shape: {outputs.shape}")
             
         # Get top 3
         top_probs, top_idxs = torch.topk(probs, 3)
@@ -246,20 +286,26 @@ def predict():
                 "confidence": round(confidence, 2),
                 "is_healthy": is_healthy
             })
+            print(f"[PREDICT] Prediction {i+1}: {class_name} ({confidence:.2f}%)")
             
         primary = predictions[0]
         treatment = get_treatment_info(primary['disease'])
         
-        return jsonify({
+        response = {
             "success": True,
             "prediction": {
                 **primary,
                 **treatment
             },
             "top_3_predictions": predictions
-        })
+        }
+        print("[PREDICT] Prediction successful!")
+        return jsonify(response)
         
     except Exception as e:
+        import traceback
+        print(f"[ERROR] Prediction failed: {e}")
+        print(f"[ERROR] Traceback: {traceback.format_exc()}")
         return jsonify({"success": False, "error": str(e)}), 500
 
 # ========================

@@ -191,17 +191,26 @@ async function handlePredict() {
     elements.predictBtn.disabled = true;
 
     try {
+        console.log('[API] Sending prediction request to:', `${CONFIG.API_BASE_URL}/predict`);
+        
         // Create form data
         const formData = new FormData();
         formData.append('file', currentFile);
 
-        // Make API request
+        // Make API request with detailed error handling
         const response = await fetch(`${CONFIG.API_BASE_URL}/predict`, {
             method: 'POST',
             body: formData,
         });
 
+        console.log('[API] Response status:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
         const data = await response.json();
+        console.log('[API] Response data:', data);
 
         if (data.success) {
             displayResults(data);
@@ -211,8 +220,9 @@ async function handlePredict() {
         }
 
     } catch (error) {
-        console.error('Prediction error:', error);
-        showToast(error.message || 'Failed to analyze image. Please try again.', 'error');
+        console.error('[ERROR] Prediction error:', error);
+        const errorMsg = error.message || 'Failed to analyze image. Please try again.';
+        showToast(errorMsg, 'error');
         elements.predictBtn.disabled = false;
     } finally {
         elements.loadingState.style.display = 'none';
