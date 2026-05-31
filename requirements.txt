@@ -1,22 +1,23 @@
 # ========================
 # CROP DISEASE CLASSIFICATION
 # Python Dependencies (PyTorch Version - Production)
+# Compatible with Python 3.11+
 # ========================
 
 # Core ML Libraries
-torch==2.0.1
-torchvision==0.15.2
-numpy>=1.26.0
+torch==2.2.2
+torchvision==0.17.2
+numpy>=1.24.0,<2.0.0
 
 # Image Processing
 Pillow>=10.0.0
 
 # Web Framework
-Flask>=3.0.0
+Flask>=3.0.0,<4.0.0
 Flask-CORS>=4.0.0
 
 # Production Server
-gunicorn>=21.0.0
+gunicorn>=21.0.0,<23.0.0
 
 # Utilities
-werkzeug>=3.0.0
+werkzeug>=3.0.0,<4.0.0
