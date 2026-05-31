@@ -142,7 +142,11 @@ def load_model():
         model = None
 
 # Initialize model
-load_model()
+try:
+    load_model()
+except Exception as e:
+    print(f"⚠️  Failed to load model on startup: {e}")
+    print("App will still start but predictions won't be available until model loads.")
 
 # ========================
 # PREPROCESSING
@@ -270,4 +274,11 @@ def predict():
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
+    print(f"\n{'='*50}")
+    print(f"🚀 Starting Crop Disease Classification API")
+    print(f"   Port: {port}")
+    print(f"   Host: 0.0.0.0")
+    print(f"   Model loaded: {model is not None}")
+    print(f"   Model path: {config.MODEL_PATH}")
+    print(f"{'='*50}\n")
     app.run(host='0.0.0.0', port=port, debug=False)
