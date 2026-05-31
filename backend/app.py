@@ -198,27 +198,6 @@ def parse_disease_name(class_name):
 # API ENDPOINTS
 # ========================
 
-@app.route('/', methods=['GET'])
-def serve_index():
-    """Serve the frontend index.html"""
-    return send_from_directory(config.FRONTEND_FOLDER, 'index.html')
-
-@app.route('/<path:path>', methods=['GET'])
-def serve_static(path):
-    """Serve static files (CSS, JS, images)"""
-    # Don't intercept API routes
-    if path.startswith('api/'):
-        return jsonify({"error": "Not Found"}), 404
-    
-    try:
-        return send_from_directory(config.FRONTEND_FOLDER, path)
-    except Exception as e:
-        # If static file not found, serve index.html for SPA routing
-        try:
-            return send_from_directory(config.FRONTEND_FOLDER, 'index.html')
-        except:
-            return jsonify({"error": f"Not Found: {path}"}), 404
-
 @app.route('/api/health', methods=['GET'])
 def health_check():
     return jsonify({
@@ -282,6 +261,27 @@ def predict():
         
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
+
+# ========================
+# FRONTEND ROUTES (LOWEST PRIORITY)
+# ========================
+
+@app.route('/', methods=['GET'])
+def serve_index():
+    """Serve the frontend index.html"""
+    return send_from_directory(config.FRONTEND_FOLDER, 'index.html')
+
+@app.route('/<path:path>', methods=['GET'])
+def serve_static(path):
+    """Serve static files (CSS, JS, images)"""
+    try:
+        return send_from_directory(config.FRONTEND_FOLDER, path)
+    except Exception as e:
+        # If static file not found, serve index.html for SPA routing
+        try:
+            return send_from_directory(config.FRONTEND_FOLDER, 'index.html')
+        except:
+            return jsonify({"error": f"Not Found: {path}"}), 404
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
