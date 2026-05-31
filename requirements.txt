@@ -4,8 +4,8 @@
 # ========================
 
 # Core ML Libraries
-torch>=2.0.0,<2.1.0
-torchvision>=0.15.0,<0.16.0
+torch==2.0.1
+torchvision==0.15.2
 numpy>=1.26.0
 
 # Image Processing
