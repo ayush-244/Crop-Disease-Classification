@@ -6,7 +6,9 @@
 // CONFIGURATION
 // ========================
 const CONFIG = {
-    API_BASE_URL: 'http://localhost:5000/api',
+    API_BASE_URL: window.location.hostname === 'localhost' 
+        ? 'http://localhost:5000/api'
+        : `${window.location.origin}/api`,
     MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
     ALLOWED_TYPES: ['image/jpeg', 'image/jpg', 'image/png'],
 };

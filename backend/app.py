@@ -206,7 +206,18 @@ def serve_index():
 @app.route('/<path:path>', methods=['GET'])
 def serve_static(path):
     """Serve static files (CSS, JS, images)"""
-    return send_from_directory(config.FRONTEND_FOLDER, path)
+    # Don't intercept API routes
+    if path.startswith('api/'):
+        return jsonify({"error": "Not Found"}), 404
+    
+    try:
+        return send_from_directory(config.FRONTEND_FOLDER, path)
+    except Exception as e:
+        # If static file not found, serve index.html for SPA routing
+        try:
+            return send_from_directory(config.FRONTEND_FOLDER, 'index.html')
+        except:
+            return jsonify({"error": f"Not Found: {path}"}), 404
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
