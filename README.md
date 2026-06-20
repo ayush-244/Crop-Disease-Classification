@@ -7,6 +7,10 @@
 
 An end-to-end deep learning project for classifying crop diseases from leaf images using **MobileNetV2 Transfer Learning**. This project includes a complete ML pipeline, REST API backend, and a modern web interface.
 
+## 🌐 Live Demo
+Try the live application here: **[https://crop-disease-classification-1-t5nk.onrender.com/](https://crop-disease-classification-1-t5nk.onrender.com/)**
+
+
 ## 📸 Screenshots
 
 ![Hero Section](docs/hero.png)
