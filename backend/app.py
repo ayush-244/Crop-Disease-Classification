@@ -9,6 +9,7 @@ from werkzeug.utils import secure_filename
 from PIL import Image
 
 import torch
+torch.set_num_threads(1)
 import torch.nn as nn
 from torchvision import models, transforms
 
